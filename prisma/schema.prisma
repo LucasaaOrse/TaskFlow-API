@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Adicione Enums para garantir que os valores sejam padronizados
+enum Status {
+  OPEN
+  IN_PROGRESS
+  REVIEW
+  DONE
+  CANCELED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  password      String
+  
+  tasksCreated  Task[]   @relation("CreatedTasks")
+  tasksAssigned Task[]   @relation("AssignedTasks")
+  
+  comments      Comment[]
+
+  refreshTokens RefreshToken[]
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?  @db.Text
+  status      Status   @default(OPEN)
+  priority    Priority @default(MEDIUM)
+  dueDate     DateTime?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt // Atualiza automaticamente sempre que o registro mudar
+
+  // Relacionamentos
+  userId      Int      // Criador da tarefa
+  user        User     @relation("CreatedTasks", fields: [userId], references: [id])
+  
+  assignedToId Int?    // Responsável (opcional)
+  assignedTo   User?   @relation("AssignedTasks", fields: [assignedToId], references: [id])
+
+  comments    Comment[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  
+  taskId    Int
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}

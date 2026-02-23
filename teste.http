@@ -1,0 +1,85 @@
+
+ @TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTc3MTU5NzgwNywiZXhwIjoxNzcxNTk4NzA3fQ.hTNxa0CnNEMPs2ubKm5HUPFKroIiSPE7ihrwPd6oa7A
+
+### Criar Task Completa
+POST http://localhost:3000/tasks
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "title": "Implementar autenticação",
+  "description": "Criar middleware JWT e proteger rotas",
+  "priority": "HIGH",
+  "dueDate": "2026-03-10T18:00:00.000Z",
+  "assignedToId": 1
+}
+
+###
+GET http://localhost:3000/tasks
+Authorization: Bearer {{TOKEN}}
+
+### Buscar Task Detalhada
+GET http://localhost:3000/tasks/1
+Authorization: Bearer {{TOKEN}}
+
+
+### Atualizar Task
+PUT http://localhost:3000/tasks/1
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "title": "Atualizar middleware JWT",
+  "status": "IN_PROGRESS",
+  "priority": "URGENT"
+}
+
+###
+DELETE http://localhost:3000/tasks/a
+
+
+###
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "email": "lucas.orse@gmail.com",
+  "password": "senha12345"
+
+}
+
+###
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "lucas.orse@gmail.com",
+  "password": "senha12345"
+
+}
+
+### Buscar tarefas atribuídas a mim
+GET http://localhost:3000/tasks/assigned/me
+Authorization: Bearer {{TOKEN}}
+
+### Atualizar status da task
+PATCH http://localhost:3000/tasks/1/status
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "status": "DONE"
+}
+
+### Criar comentário
+POST http://localhost:3000/tasks/1/comments
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "content": "Falta de informações"
+}
+
+### Listar comentários
+GET http://localhost:3000/tasks/1/comments
+Authorization: Bearer {{TOKEN}}
